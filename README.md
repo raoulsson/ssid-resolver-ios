@@ -3,7 +3,7 @@
 A standalone app to resolve the SSID of the connected WiFi network on iOS, or simply: "Get my Wifi Name". This implementation uses the
 latest iOS APIs as of January 2025 and you need a target platform of iOS 15.0 or higher.
 
-This code was created to be wrapped as a Flutter plugin, which you can find here: https://github.com/raoulsson/ssid_resolver_flutter_plugin
+This code was created to be wrapped as a Flutter plugin, which you can find here: https://github.com/raoulsson/ssid_resolver_flutter
 
 ## Quick Info
 
