@@ -3,7 +3,6 @@
 A standalone app to resolve the SSID of the connected WiFi network on iOS, or simply: "Get my Wifi Name". This implementation uses the
 latest iOS APIs as of January 2026 and you need a target platform of iOS 15.0 or higher.
 
-This code was created to be wrapped as a Flutter plugin, which you can find here: https://github.com/raoulsson/ssid_resolver_flutter
 
 > [!IMPORTANT]
 > **Version 2.0 - it now tells you the truth about why the SSID is missing, and it can read the netmask.**
@@ -24,6 +23,19 @@ This code was created to be wrapped as a Flutter plugin, which you can find here
 > workaround - first three octets plus `.255` - is only correct on a `/24`. On the `/20` below the real
 > broadcast is `10.8.15.255`, while the shortcut yields `10.8.2.255`: an ordinary unused host address
 > that silently swallows everything sent to it.
+
+## Related repositories
+
+This app is the iOS source for a three-repo family. The Swift in `src/core` is lifted verbatim into the
+Flutter plugin, so a fix here belongs there too, and vice versa.
+
+| | |
+|---|---|
+| **Flutter plugin** (published) | [ssid_resolver_flutter](https://github.com/raoulsson/ssid_resolver_flutter) - [pub.dev](https://pub.dev/packages/ssid_resolver_flutter) |
+| **Android counterpart** | [ssid-resolver-android](https://github.com/raoulsson/ssid-resolver-android) |
+
+Running the native app first is the fastest way to tell a platform bug from a Flutter channel bug: if
+the value is right here and wrong in the plugin, the fault is in the Dart layer.
 
 ## Quick Info
 
