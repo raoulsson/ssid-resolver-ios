@@ -8,24 +8,22 @@ This code was created to be wrapped as a Flutter plugin, which you can find here
 > [!IMPORTANT]
 > **Version 2.0 - it now tells you the truth about why the SSID is missing, and it can read the netmask.**
 >
-> Before, a failed lookup always blamed the same thing. `NEHotspotNetwork.fetchCurrent()` returning
-> `nil` was treated as proof that the Access WiFi Information entitlement was missing - but that call
-> returns `nil` for at least three different reasons: no entitlement, no Wi-Fi connection at all, or a
-> network that simply withholds its name, which captive portals, enterprise and many guest networks do.
-> The app reported the first one as fact every time, so on a guest network it sent you hunting for an
-> entitlement you already had. It now attempts the real fetch first and, when that comes back empty,
-> uses the interface table to tell "not on Wi-Fi" apart from "on Wi-Fi, name withheld", and says which.
-> The screenshots below are that path end to end, on a real iPhone on a guest network.
+> A failed lookup used to blame one thing every time. `NEHotspotNetwork.fetchCurrent()` returning `nil`
+> was treated as proof that the Access WiFi Information entitlement was missing.
 >
-> Version 2.0 also adds `NetworkInterfaceResolver`, which reports every IPv4 interface with its **real
-> netmask** and the broadcast address derived from it. `getifaddrs` needs no entitlement and no
-> permission at all, so the interface list works even on a device where Location has been denied and
-> the SSID cannot be resolved at all. This matters because without a netmask
-> there is no way to compute a broadcast address, and the usual workaround - take the first three
-> octets and append `.255` - is only correct on a `/24`. On the `/20` shown below, the real broadcast
-> is `10.8.15.255` while that shortcut yields `10.8.2.255`, an ordinary unused host address that
-> silently swallows everything sent to it.
-
+> It returns `nil` for at least three reasons: no entitlement, no Wi-Fi connection, or a network that
+> withholds its name - which captive portals, enterprise and many guest networks do. So on a guest
+> network the app sent you hunting for an entitlement you already had. It now attempts the real fetch
+> and, when that comes back empty, tells "not on Wi-Fi" apart from "on Wi-Fi, name withheld".
+>
+> Version 2.0 also adds `NetworkInterfaceResolver`: every IPv4 interface with its **real netmask** and
+> the broadcast derived from it. `getifaddrs` needs no entitlement and no permission, so the list works
+> even where Location is denied and the SSID cannot be resolved at all.
+>
+> That matters because without a netmask there is no way to compute a broadcast address, and the usual
+> workaround - first three octets plus `.255` - is only correct on a `/24`. On the `/20` below the real
+> broadcast is `10.8.15.255`, while the shortcut yields `10.8.2.255`: an ordinary unused host address
+> that silently swallows everything sent to it.
 
 ## Quick Info
 
