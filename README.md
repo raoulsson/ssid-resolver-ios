@@ -50,10 +50,10 @@ The full permission path on a physical iPhone, left to right, top to bottom.
 |                                                                                                                        |                                                                                                                                    |
 |------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | <img src="res/ios-1-nothing-granted.jpeg" alt="Nothing granted" width="400"/><br />**1.** Nothing granted yet - the SSID is simply unknown | <img src="res/ios-2-why-it-failed.jpeg" alt="Why it failed" width="400"/><br />**2.** Tapping Resolve says exactly what is missing: Location Access |
-| <img src="res/ios-3-location-prompt.jpeg" alt="Location prompt" width="400"/><br />**3.** The OS prompt, explained by `NSLocationWhenInUseUsageDescription` | <img src="res/ios-4-granted-not-resolved.jpeg" alt="Granted" width="400"/><br />**4.** Both permissions granted, ready to resolve |
-| <img src="res/ios-5-ssid-resolved.jpeg" alt="SSID resolved" width="400"/><br />**5.** Resolved: `ZH1082Guest` | <img src="res/ios-6-network-interfaces.jpeg" alt="Network interfaces" width="400"/><br />**6.** Interfaces with real netmasks - no permission needed for this list |
+| <img src="res/ios-3-location-prompt.jpeg" alt="Location prompt" width="400"/><br />**3.** The OS prompt, explained by `NSLocationWhenInUseUsageDescription` | <img src="res/ios-5-ssid-resolved.jpeg" alt="SSID resolved" width="400"/><br />**4.** Resolved: `ZH1082Guest` |
+| <img src="res/ios-6-network-interfaces.jpeg" alt="Network interfaces" width="400"/><br />**5.** Interfaces with real netmasks - no permission needed for this list | |
 
-Screenshot 6 is worth a second look. `en0` is on a `/20`, so its broadcast is `10.8.15.255` and not
+The interface list is worth a second look. `en0` is on a `/20`, so its broadcast is `10.8.15.255` and not
 the `10.8.2.255` a `.255` shortcut would produce. `pdp_ip0` is cellular on a `/32`, where the derived
 broadcast equals the interface's own address - which is why cellular has to be excluded from any list
 of broadcast targets rather than merely looking odd.
