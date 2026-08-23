@@ -123,6 +123,36 @@ struct SSIDResolverView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(6)
                         .background(Color(hex: "FFCDD2"))
+
+                    // Divider
+                    Rectangle()
+                        .fill(orangeColor)
+                        .frame(height: 1)
+                        .padding(.vertical, 16)
+
+                    // Network Interfaces - needs no permission, works with
+                    // Location denied, which is the whole point of this section.
+                    HStack {
+                        Text("Network Interfaces:")
+                            .foregroundColor(.white)
+                            .font(.system(size: 18, weight: .bold))
+                        Spacer()
+                    }
+
+                    Button(action: {
+                        viewModel.fetchInterfaces()
+                    }) {
+                        Text("Refresh Interfaces")
+                            .font(.system(size: 18))
+                            .foregroundColor(.white)
+                            .frame(height: 40)
+                    }
+                    .frame(minWidth: 200)
+                    .background(orangeColor)
+                    .cornerRadius(4)
+                    .padding(.top, 4)
+
+                    NetworkInterfaceListView(interfaces: viewModel.interfaces)
                 }
             }
             .padding(12)
@@ -131,6 +161,63 @@ struct SSIDResolverView: View {
         .task {
             await viewModel.checkPermissionStatus()
         }
+    }
+}
+
+// Plain, complete dump of every interface: name, ip, prefixLength, netmask,
+// broadcast verbatim, plus the naive "/24 guess" next to the real broadcast so
+// the difference on a non-/24 network is visible at a glance - that
+// difference is the entire reason NetworkInterfaceResolver exists.
+private struct NetworkInterfaceListView: View {
+    let interfaces: [NetworkInterfaceInfo]
+
+    var body: some View {
+        VStack(spacing: 8) {
+            if interfaces.isEmpty {
+                Text("No interfaces (tap Refresh)")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                ForEach(Array(interfaces.enumerated()), id: \.offset) { _, iface in
+                    interfaceRow(iface)
+                }
+            }
+        }
+        .padding(.top, 4)
+    }
+
+    private func interfaceRow(_ iface: NetworkInterfaceInfo) -> some View {
+        let naiveGuess = Self.naiveBroadcast(ip: iface.ip)
+        let differs = naiveGuess != iface.broadcast
+
+        return VStack(alignment: .leading, spacing: 2) {
+            Text(iface.name)
+                .font(.system(size: 16, weight: .bold, design: .monospaced))
+            Text("ip: \(iface.ip)/\(iface.prefixLength)")
+                .font(.system(size: 14, design: .monospaced))
+            Text("netmask: \(iface.netmask)")
+                .font(.system(size: 14, design: .monospaced))
+            Text("broadcast (real): \(iface.broadcast)")
+                .font(.system(size: 14, design: .monospaced))
+            Text("broadcast (/24 guess): \(naiveGuess)")
+                .font(.system(size: 14, design: .monospaced))
+            Text(differs ? "DIFFER" : "same")
+                .font(.system(size: 14, weight: .bold, design: .monospaced))
+                .foregroundColor(differs ? .red : .green)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(8)
+        .background(Color(hex: differs ? "FFE0B2" : "E0E0E0"))
+        .cornerRadius(4)
+    }
+
+    // Mirrors the naive "first three octets + .255" logic the plugin used
+    // before NetworkInterfaceResolver existed - the buggy behavior this
+    // screen exists to expose, not a real network computation.
+    private static func naiveBroadcast(ip: String) -> String {
+        let parts = ip.split(separator: ".")
+        guard parts.count == 4 else { return "?" }
+        return "\(parts[0]).\(parts[1]).\(parts[2]).255"
     }
 }
 

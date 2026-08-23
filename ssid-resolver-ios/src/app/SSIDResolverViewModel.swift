@@ -10,6 +10,7 @@ class SSIDResolverViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var grantedPermissions: [String: String] = [:]
     @Published var deniedPermissions: [String: String] = [:]
+    @Published var interfaces: [NetworkInterfaceInfo] = []
 
     private let requiredPermissions = [
         "Location (When In Use)",
@@ -111,6 +112,13 @@ class SSIDResolverViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    // Unlike SSID resolution, this needs no permission and no async call -
+    // getifaddrs(3) is a plain local syscall - so this is a direct
+    // synchronous refresh triggered by a button, not a Task.
+    func fetchInterfaces() {
+        interfaces = NetworkInterfaceResolver.fetchAll()
     }
 
     func fetchSSID() async {
