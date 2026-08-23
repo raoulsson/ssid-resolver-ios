@@ -16,12 +16,21 @@ class MissingPermissionException: Error {
 
 enum SSIDResolverError: Error {
     case noWifiConnection
+    case ssidWithheld
     case unknown
-    
+
     var localizedDescription: String {
         switch self {
         case .noWifiConnection:
             return "Not connected to any WiFi network"
+        case .ssidWithheld:
+            // fetchCurrent() returning nil while WiFi is plainly up has more
+            // than one cause, and the old code reported the entitlement as
+            // fact. Naming all three is the honest answer, and on a commercial
+            // or captive network the entitlement is often not the reason.
+            return "Connected to WiFi, but iOS did not return the network name. "
+                + "This needs the Access WiFi Information entitlement; captive, "
+                + "enterprise and some guest networks also withhold it."
         case .unknown:
             return "Unknown error occurred while fetching WiFi information"
         }
@@ -110,21 +119,25 @@ class CoreSSIDResolver: NSObject, CLLocationManagerDelegate {
             missingPermissions.append("Location Access")
         }
         
-        // Check WiFi entitlement by attempting to fetch
-        if await NEHotspotNetwork.fetchCurrent() == nil {
-            missingPermissions.append("WiFi Information Access")
-        }
-        
-        // If we have missing permissions, throw the detailed exception
+        // Location is the one cause we can actually observe, so it stays a
+        // hard precondition. Everything else is diagnosed after the attempt.
         if !missingPermissions.isEmpty {
             print("CoreSSIDResolver: Missing permissions: \(missingPermissions.joined(separator: ", "))")
             throw MissingPermissionException(missingPermissions)
         }
-        
-        // If we get here, we should have all permissions, try to fetch
+
         guard let currentNetwork = await NEHotspotNetwork.fetchCurrent() else {
-            print("CoreSSIDResolver: No current network found")
-            throw SSIDResolverError.noWifiConnection
+            // Distinguish "no WiFi" from "WiFi up but name withheld" by asking
+            // the interface table, which needs no permission at all. Without
+            // this the user is told a permission is missing when the real cause
+            // may be the network they are standing on.
+            let onWifi = NetworkInterfaceResolver.fetchAll().contains { iface in
+                iface.name.hasPrefix("en")
+                    && !iface.ip.hasPrefix("169.254.")
+                    && !iface.ip.hasPrefix("127.")
+            }
+            print("CoreSSIDResolver: fetchCurrent returned nil, wifi interface up: \(onWifi)")
+            throw onWifi ? SSIDResolverError.ssidWithheld : SSIDResolverError.noWifiConnection
         }
         
         print("CoreSSIDResolver: Successfully got SSID: \(currentNetwork.ssid)")

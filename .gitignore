@@ -14,3 +14,5 @@
 .cxx
 local.properties
 .idea
+# Per-user Xcode state, never shared
+xcuserdata/

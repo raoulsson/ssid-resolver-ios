@@ -27,6 +27,7 @@ struct SSIDResolverView: View {
                 Text(viewModel.ssid)
                     .font(.system(size: 30))
                     .bold()
+                    .foregroundColor(Color(hex: "142467"))
                     .frame(maxWidth: .infinity)
                     .padding(12)
                     .background(Color(hex: "E0E0E0"))
@@ -66,6 +67,7 @@ struct SSIDResolverView: View {
                 Text(viewModel.permissionStatus)
                     .font(.system(size: 22))
                     .bold()
+                    .foregroundColor(Color(hex: "142467"))
                     .frame(maxWidth: .infinity)
                     .padding(12)
                     .background(Color(hex: "E0E0E0"))
@@ -106,6 +108,7 @@ struct SSIDResolverView: View {
                     .padding(.top, 16)
                     
                     Text(viewModel.grantedPermissions.values.joined(separator: "\n"))
+                        .foregroundColor(Color(hex: "142467"))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(6)
                         .background(Color(hex: "C8E6C9"))
@@ -120,6 +123,7 @@ struct SSIDResolverView: View {
                     .padding(.top, 12)
                     
                     Text(viewModel.deniedPermissions.values.joined(separator: "\n"))
+                        .foregroundColor(Color(hex: "142467"))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(6)
                         .background(Color(hex: "FFCDD2"))
@@ -187,38 +191,28 @@ private struct NetworkInterfaceListView: View {
     }
 
     private func interfaceRow(_ iface: NetworkInterfaceInfo) -> some View {
-        let naiveGuess = Self.naiveBroadcast(ip: iface.ip)
-        let differs = naiveGuess != iface.broadcast
+        let navy = Color(hex: "142467")
 
-        return VStack(alignment: .leading, spacing: 2) {
+        return VStack(alignment: .leading, spacing: 3) {
             Text(iface.name)
-                .font(.system(size: 16, weight: .bold, design: .monospaced))
-            Text("ip: \(iface.ip)/\(iface.prefixLength)")
+                .font(.system(size: 17, weight: .bold, design: .monospaced))
+                .foregroundColor(navy)
+            Text("ip        \(iface.ip)/\(iface.prefixLength)")
                 .font(.system(size: 14, design: .monospaced))
-            Text("netmask: \(iface.netmask)")
+                .foregroundColor(navy)
+            Text("netmask   \(iface.netmask)")
                 .font(.system(size: 14, design: .monospaced))
-            Text("broadcast (real): \(iface.broadcast)")
+                .foregroundColor(navy)
+            Text("broadcast \(iface.broadcast)")
                 .font(.system(size: 14, design: .monospaced))
-            Text("broadcast (/24 guess): \(naiveGuess)")
-                .font(.system(size: 14, design: .monospaced))
-            Text(differs ? "DIFFER" : "same")
-                .font(.system(size: 14, weight: .bold, design: .monospaced))
-                .foregroundColor(differs ? .red : .green)
+                .foregroundColor(navy)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(8)
-        .background(Color(hex: differs ? "FFE0B2" : "E0E0E0"))
-        .cornerRadius(4)
+        .padding(10)
+        .background(Color(hex: "E0E0E0"))
+        .cornerRadius(8)
     }
 
-    // Mirrors the naive "first three octets + .255" logic the plugin used
-    // before NetworkInterfaceResolver existed - the buggy behavior this
-    // screen exists to expose, not a real network computation.
-    private static func naiveBroadcast(ip: String) -> String {
-        let parts = ip.split(separator: ".")
-        guard parts.count == 4 else { return "?" }
-        return "\(parts[0]).\(parts[1]).\(parts[2]).255"
-    }
 }
 
 // Helper for hex colors
