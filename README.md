@@ -5,24 +5,18 @@ latest iOS APIs as of January 2026 and you need a target platform of iOS 15.0 or
 
 
 > [!IMPORTANT]
-> **Version 2.0 - it now tells you the truth about why the SSID is missing, and it can read the netmask.**
+> **2.0 - the delta, in two parts.**
 >
-> A failed lookup used to blame one thing every time. `NEHotspotNetwork.fetchCurrent()` returning `nil`
-> was treated as proof that the Access WiFi Information entitlement was missing.
+> **It tells you the truth about a failed SSID lookup.** `fetchCurrent()` returning `nil` used to be
+> reported as a missing entitlement every time. It has at least three causes, and on a guest or
+> captive network the entitlement is usually not the one - so it sent you hunting for something you
+> already had.
 >
-> It returns `nil` for at least three reasons: no entitlement, no Wi-Fi connection, or a network that
-> withholds its name - which captive portals, enterprise and many guest networks do. So on a guest
-> network the app sent you hunting for an entitlement you already had. It now attempts the real fetch
-> and, when that comes back empty, tells "not on Wi-Fi" apart from "on Wi-Fi, name withheld".
->
-> Version 2.0 also adds `NetworkInterfaceResolver`: every IPv4 interface with its **real netmask** and
-> the broadcast derived from it. `getifaddrs` needs no entitlement and no permission, so the list works
-> even where Location is denied and the SSID cannot be resolved at all.
->
-> That matters because without a netmask there is no way to compute a broadcast address, and the usual
-> workaround - first three octets plus `.255` - is only correct on a `/24`. On the `/20` below the real
-> broadcast is `10.8.15.255`, while the shortcut yields `10.8.2.255`: an ordinary unused host address
-> that silently swallows everything sent to it.
+> **And it can read the real netmask**, so a broadcast address is derived rather than guessed. The
+> universal guess - first three octets plus `.255` - is correct on a `/24` and silently wrong on the
+> `/20`, `/22` and `/16` that corporate, campus and guest networks hand out. Wrong in the worst way:
+> the send succeeds, nothing throws, the packet reaches nobody. Needs no entitlement and no
+> permission. [The details, with the numbers](#the-netmask-problem-in-detail).
 
 ## Related repositories
 
@@ -59,6 +53,25 @@ broadcast equals the interface's own address - which is why cellular has to be e
 of broadcast targets rather than merely looking odd.
 
 Further relevant methods will be added soon.
+
+## The netmask problem in detail
+
+A failed lookup used to blame one thing every time. `NEHotspotNetwork.fetchCurrent()` returning `nil`
+was treated as proof that the Access WiFi Information entitlement was missing.
+
+It returns `nil` for at least three reasons: no entitlement, no Wi-Fi connection, or a network that
+withholds its name - which captive portals, enterprise and many guest networks do. So on a guest
+network the app sent you hunting for an entitlement you already had. It now attempts the real fetch
+and, when that comes back empty, tells "not on Wi-Fi" apart from "on Wi-Fi, name withheld".
+
+Version 2.0 also adds `NetworkInterfaceResolver`: every IPv4 interface with its **real netmask** and
+the broadcast derived from it. `getifaddrs` needs no entitlement and no permission, so the list works
+even where Location is denied and the SSID cannot be resolved at all.
+
+That matters because without a netmask there is no way to compute a broadcast address, and the usual
+workaround - first three octets plus `.255` - is only correct on a `/24`. On the `/20` below the real
+broadcast is `10.8.15.255`, while the shortcut yields `10.8.2.255`: an ordinary unused host address
+that silently swallows everything sent to it.
 
 ## Setting up the plugin for iOS
 
