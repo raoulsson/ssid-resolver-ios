@@ -23,9 +23,9 @@ to-do list - and the exact set to replicate if you are wiring the same lookup in
   `ssid-resolver-ios/ssid-resolver-ios.entitlements`, wired up via the target's
   "Access WiFi Information" capability under "Signing & Capabilities":
 
-| Add WiFi Capability 1                                                              | Add WiFi Capability 2                                                              |
-|------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| <img src="res/add-wifi-capability-1.png" alt="Add WiFi Capability 1" width="400"/> | <img src="res/add-wifi-capability-2.png" alt="Add WiFi Capability 2" width="400"/> |
+<img src="res/add-wifi-capability-1.png" alt="Add WiFi Capability 1" width="400"/>
+
+<img src="res/add-wifi-capability-2.png" alt="Add WiFi Capability 2" width="400"/>
 
 > [!WARNING]
 > **The `wifi-info` entitlement cannot be provisioned by a personal development team.** To run on a
@@ -43,11 +43,25 @@ for a team - the Flutter plugin's README
 
 The full permission path on a physical iPhone, left to right, top to bottom.
 
-|                                                                                                                        |                                                                                                                                    |
-|------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| <img src="res/ios-1-nothing-granted.jpeg" alt="Nothing granted" width="400"/><br />**1.** Nothing granted yet - the SSID is simply unknown | <img src="res/ios-2-why-it-failed.jpeg" alt="Why it failed" width="400"/><br />**2.** Tapping Resolve says exactly what is missing: Location Access |
-| <img src="res/ios-3-location-prompt.jpeg" alt="Location prompt" width="400"/><br />**3.** The OS prompt, explained by `NSLocationWhenInUseUsageDescription` | <img src="res/ios-5-ssid-resolved.jpeg" alt="SSID resolved" width="400"/><br />**4.** Resolved: the network name appears |
-| <img src="res/ios-6-network-interfaces.jpeg" alt="Network interfaces" width="400"/><br />**5.** Interfaces with real netmasks - no permission needed for this list | |
+<img src="res/ios-1-nothing-granted.jpeg" alt="Nothing granted" width="400"/>
+
+**1.** Nothing granted yet - the SSID is simply unknown
+
+<img src="res/ios-2-why-it-failed.jpeg" alt="Why it failed" width="400"/>
+
+**2.** Tapping Resolve says exactly what is missing: Location Access
+
+<img src="res/ios-3-location-prompt.jpeg" alt="Location prompt" width="400"/>
+
+**3.** The OS prompt, explained by `NSLocationWhenInUseUsageDescription`
+
+<img src="res/ios-5-ssid-resolved.jpeg" alt="SSID resolved" width="400"/>
+
+**4.** Resolved: the network name appears
+
+<img src="res/ios-6-network-interfaces.jpeg" alt="Network interfaces" width="400"/>
+
+**5.** Interfaces with real netmasks - no permission needed for this list
 
 ### When a lookup fails, the app tells you why - honestly
 
