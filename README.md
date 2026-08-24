@@ -46,7 +46,7 @@ The full permission path on a physical iPhone, left to right, top to bottom.
 |                                                                                                                        |                                                                                                                                    |
 |------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | <img src="res/ios-1-nothing-granted.jpeg" alt="Nothing granted" width="400"/><br />**1.** Nothing granted yet - the SSID is simply unknown | <img src="res/ios-2-why-it-failed.jpeg" alt="Why it failed" width="400"/><br />**2.** Tapping Resolve says exactly what is missing: Location Access |
-| <img src="res/ios-3-location-prompt.jpeg" alt="Location prompt" width="400"/><br />**3.** The OS prompt, explained by `NSLocationWhenInUseUsageDescription` | <img src="res/ios-5-ssid-resolved.jpeg" alt="SSID resolved" width="400"/><br />**4.** Resolved: `ZH1082Guest` |
+| <img src="res/ios-3-location-prompt.jpeg" alt="Location prompt" width="400"/><br />**3.** The OS prompt, explained by `NSLocationWhenInUseUsageDescription` | <img src="res/ios-5-ssid-resolved.jpeg" alt="SSID resolved" width="400"/><br />**4.** Resolved: the network name appears |
 | <img src="res/ios-6-network-interfaces.jpeg" alt="Network interfaces" width="400"/><br />**5.** Interfaces with real netmasks - no permission needed for this list | |
 
 ### When a lookup fails, the app tells you why - honestly
