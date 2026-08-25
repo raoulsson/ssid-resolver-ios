@@ -63,7 +63,7 @@ The full permission path on a physical iPhone, left to right, top to bottom.
 
 **5.** Interfaces with real netmasks - no permission needed for this list
 
-### When a lookup fails, the app tells you why - honestly
+### When a lookup fails, the app tells you which of the three causes it was
 
 `NEHotspotNetwork.fetchCurrent()` returns `nil` for at least three reasons: no entitlement, no
 Wi-Fi connection, or a network that withholds its name - which captive portals, enterprise and many

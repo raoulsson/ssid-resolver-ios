@@ -26,7 +26,7 @@ enum SSIDResolverError: LocalizedError {
         case .ssidWithheld:
             // fetchCurrent() returning nil while WiFi is plainly up has more
             // than one cause, and the old code reported the entitlement as
-            // fact. Naming all three is the honest answer, and on a commercial
+            // fact. Naming all three is what the caller can act on, and on a commercial
             // or captive network the entitlement is often not the reason.
             return "Connected to WiFi, but iOS did not return the network name. "
                 + "This needs the Access WiFi Information entitlement; captive, "
